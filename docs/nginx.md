@@ -40,11 +40,14 @@ This homelab uses the **conf.d/** pattern for nginx virtual host configurations.
 - Deploy script syncs repo → host, excluding cert contents.
 
 ## Accessing host services from nginx container
-To proxy requests to services running on the Docker host (not in containers), use 
-`host.docker.internal` as the upstream hostname:
+**Platform policy: Nginx should generally NOT proxy to host-level services.**
+
+The homelab-platform Nginx is designed to proxy containerized services on the `geek-infra` Docker network. Host-level services should be accessed directly when possible to maintain clean architecture.
+
+If you must proxy to a host service, use `host.docker.internal` as the upstream hostname:
 
 ```nginx
-proxy_pass http://host.docker.internal:8888;
+proxy_pass http://host.docker.internal:<port>;
 ```
 
 This requires the `extra_hosts` configuration in docker-compose.yml:
@@ -54,15 +57,18 @@ extra_hosts:
 ```
 
 The `host-gateway` special value automatically resolves to the host's IP address, making 
-this configuration portable across different hosts without hardcoding IP addresses. This 
-is the recommended best practice for Docker on Linux.
+this configuration portable across different hosts without hardcoding IP addresses.
+
+**Note**: This capability exists for exceptional cases only. Prefer containerized services that attach to the `geek-infra` network.
 
 ## Landing Page
 The default server (`00_geek.conf`) serves a beautiful landing page from `html/index.html` that provides:
 - Visual status indicator for the platform
-- Quick access links to services (e.g., CasaOS at `/casaos/`)
+- Quick access links to containerized platform services
 - Responsive design for desktop and mobile
 - Modern gradient UI matching the GEEK platform branding
+
+Note: Host-level services (like CasaOS) are not included on the landing page as they are accessed directly, not through Nginx.
 
 ## Validation
 - `docker exec geek-nginx nginx -t`
