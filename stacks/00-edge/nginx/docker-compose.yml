@@ -1,0 +1,22 @@
+name: geek
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: geek-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx-docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/nginx-docker/conf.d:/etc/nginx/conf.d:ro
+      - /etc/nginx-docker/snippets:/etc/nginx/snippets:ro
+      - /etc/nginx-docker/certs:/etc/nginx/certs:ro
+    networks:
+      - geek-infra
+
+networks:
+  geek-infra:
+    external: true
+    name: geek-infra

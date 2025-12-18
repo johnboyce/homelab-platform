@@ -1,0 +1,31 @@
+# -------------------------------------------------------------------
+# Secrets and credentials MUST NOT be committed
+# -------------------------------------------------------------------
+**/*.env
+.env
+.env.*
+**/secrets/**
+secrets/**
+
+# Private keys / certs
+**/*.key
+**/*.pem
+**/*.pfx
+**/*.p12
+**/*.crt
+**/certs/**
+/etc-nginx-docker/certs/**
+
+# Backups produced locally on host
+backups/**
+*.tgz
+*.tar.gz
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log

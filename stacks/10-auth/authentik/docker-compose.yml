@@ -1,0 +1,10 @@
+name: geek
+services:
+  placeholder:
+    image: alpine:3.20
+    command: ["sh", "-c", "echo 'Authentik stack placeholder'; sleep 3600"]
+    networks: [geek-infra]
+networks:
+  geek-infra:
+    external: true
+    name: geek-infra
