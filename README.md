@@ -61,6 +61,15 @@ make up STACK=stacks/20-apps/bookstack
 
 ---
 
+## Host-level Services
+
+Some services run on the host (outside Docker) and are accessed directly:
+- **CasaOS**: Home management dashboard, accessible at `http://<host-ip>:8888` (LAN-only)
+
+See `docs/casaos.md` for details on host-level service access and security.
+
+---
+
 ## Operations
 
 - Backup runtime config + env + inventory:
