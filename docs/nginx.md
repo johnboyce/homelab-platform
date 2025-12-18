@@ -7,6 +7,7 @@ Mount only:
 - `conf.d/`
 - `snippets/`
 - `certs/` (read-only)
+- `html/` (read-only, for landing page)
 
 Mounting the full directory is known to break default Nginx files (e.g., mime.types).
 
@@ -28,6 +29,13 @@ This homelab uses the **conf.d/** pattern for nginx virtual host configurations.
 - Reference nginx tree lives in: `stacks/00-edge/nginx/etc-nginx-docker/`
 - Runtime nginx tree lives on host: `/etc/nginx-docker/`
 - Deploy script syncs repo → host, excluding cert contents.
+
+## Landing Page
+The default server (`00_geek.conf`) serves a beautiful landing page from `html/index.html` that provides:
+- Visual status indicator for the platform
+- Quick access links to services (e.g., CasaOS at `/casaos/`)
+- Responsive design for desktop and mobile
+- Modern gradient UI matching the GEEK platform branding
 
 ## Validation
 - `docker exec geek-nginx nginx -t`
