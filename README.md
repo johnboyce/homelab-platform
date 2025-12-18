@@ -43,20 +43,30 @@ Start from: `env/examples/global.env.example`
 make bootstrap
 ```
 
-### 3) Deploy edge (Nginx)
+### 3) Deploy shared infrastructure (PostgreSQL, Redis)
+```bash
+make deploy-infra
+```
+
+### 4) Deploy edge (Nginx)
 ```bash
 make deploy-edge
 make validate
 ```
 
-### 4) Bring up identity (Authentik)
+### 5) Bring up identity (Authentik)
 ```bash
-make up STACK=stacks/10-auth/authentik
+make deploy-auth
 ```
 
-### 5) Add apps (one at a time)
+### 6) Deploy applications
 ```bash
-make up STACK=stacks/20-apps/bookstack
+make deploy-apps
+```
+
+Or deploy everything at once:
+```bash
+make deploy-all
 ```
 
 ---
@@ -90,8 +100,13 @@ See `docs/operations.md` for full runbooks.
 ```
 stacks/                 # deployable units, ordered by prefix
   00-edge/nginx/        # ingress + nginx config deployment
+  05-infra/             # shared infrastructure
+    postgres/           # PostgreSQL database (shared by all apps)
+    redis/              # Redis cache (used by Authentik)
   10-auth/authentik/    # SSO (Authentik)
-  20-apps/bookstack/    # example application stack
+  15-network/pihole/    # DNS and ad-blocking
+  20-apps/bookstack/    # wiki/documentation application
+  30-admin/cockpit/     # system administration dashboard
 
 scripts/                # the only place allowed to mutate host state
 env/examples/           # templates only (no secrets)

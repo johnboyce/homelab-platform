@@ -1,0 +1,30 @@
+name: geek
+
+services:
+  redis:
+    image: redis:7
+    container_name: geek-redis
+    restart: unless-stopped
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/redis.env
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - geek-infra
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis-data:
+    name: geek-redis-data
+
+networks:
+  geek-infra:
+    external: true
+    name: geek-infra
