@@ -9,6 +9,18 @@ The platform uses a single PostgreSQL 16 instance (`geek-postgres`) that hosts d
 - **bookstack**: Wiki/documentation database
 - (Future services can also use this shared instance)
 
+## Data Storage
+
+PostgreSQL data is stored in a **Docker named volume** (`geek-postgres-data`), consistent with all other services in the platform. This approach provides:
+- **Portability**: Volumes are managed by Docker and work across different systems
+- **Consistency**: All platform services use named volumes (no bind mounts)
+- **Easier management**: Use standard Docker volume commands for backup, inspection, and migration
+
+To inspect the volume:
+```bash
+docker volume inspect geek-postgres-data
+```
+
 ## Accessing PostgreSQL
 
 ### Using psql in the container

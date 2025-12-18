@@ -14,6 +14,35 @@ The platform is composed of independent **stacks**, deployed in a controlled ord
 - Repo: desired state (compose + reference configs + docs)
 - Host: runtime state (secrets, certs, persistent data)
 
+## Data Persistence Strategy
+
+All platform services use **Docker named volumes** for data persistence, following these principles:
+
+**Named Volumes (Standard)**:
+- All services use Docker-managed named volumes for persistent data
+- Naming convention: `geek-{service}-{purpose}` (e.g., `geek-postgres-data`, `geek-redis-data`)
+- Benefits: Portable, consistent, easy to manage with Docker commands
+- Managed by Docker: `docker volume ls`, `docker volume inspect`, etc.
+
+**Configuration Files**:
+- Nginx uses bind mounts for configuration files (`/etc/nginx-docker/*`)
+- These are read-only (`:ro`) mounts for host-managed configuration
+- This is a special case for the edge proxy and acceptable
+
+**No Bind Mounts for Data**:
+- Bind mounts (e.g., `/srv/homelab/...`) are NOT used for persistent application data
+- Maintains consistency and portability across different host systems
+- Avoids hardcoded paths and permission issues
+
+**Examples**:
+- PostgreSQL: `geek-postgres-data`
+- Redis: `geek-redis-data`
+- Authentik: `geek-authentik-media`, `geek-authentik-certs`
+- Bookstack: `geek-bookstack-config`
+- Pi-hole: `geek-pihole-etc`, `geek-pihole-dnsmasq`
+
+See individual service documentation for volume management details.
+
 ## Goals
 - Reproducibility: a new operator can deploy from scratch by following docs + scripts.
 - Safety: no secrets in git; deterministic deploy/rollback/backup.

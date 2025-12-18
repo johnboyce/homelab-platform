@@ -9,7 +9,7 @@ services:
       - /etc/homelab/secrets/global.env
       - /etc/homelab/secrets/postgres.env
     volumes:
-      - /srv/homelab/postgres/pgdata:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - geek-infra
     healthcheck:
@@ -17,6 +17,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres-data:
+    name: geek-postgres-data
 
 networks:
   geek-infra:
