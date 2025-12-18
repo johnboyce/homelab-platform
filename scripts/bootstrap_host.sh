@@ -18,7 +18,7 @@ sudo chown root:root "${SECRETS_DIR}"
 sudo chmod 700 "${SECRETS_DIR}"
 
 log "Ensuring nginx-docker dir exists: ${NGINX_DOCKER_DIR}"
-sudo mkdir -p "${NGINX_DOCKER_DIR}"/{conf.d,snippets,sites-available,sites-enabled,certs}
+sudo mkdir -p "${NGINX_DOCKER_DIR}"/{conf.d,snippets,certs}
 sudo chown -R root:root "${NGINX_DOCKER_DIR}"
 sudo chmod 755 "${NGINX_DOCKER_DIR}"
 sudo chmod 700 "${NGINX_DOCKER_DIR}/certs"
