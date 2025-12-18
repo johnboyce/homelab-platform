@@ -2,7 +2,7 @@ name: geek
 
 services:
   nginx:
-    image: nginx:1.27-alpine
+    image: nginx:1.29.4
     container_name: geek-nginx
     restart: unless-stopped
     ports:
