@@ -1,9 +1,88 @@
 name: geek
+
 services:
-  placeholder:
-    image: alpine:3.20
-    command: ["sh", "-c", "echo 'Authentik stack placeholder'; sleep 3600"]
-    networks: [geek-infra]
+  server:
+    image: ghcr.io/goauthentik/server:2025.10.3
+    container_name: authentik-server
+    restart: unless-stopped
+    command: server
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/authentik.env
+    environment:
+      AUTHENTIK_REDIS__HOST: geek-redis
+      AUTHENTIK_POSTGRESQL__HOST: geek-postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+    volumes:
+      - authentik-media:/media
+      - authentik-custom-templates:/templates
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    networks:
+      - geek-infra
+    depends_on:
+      - worker
+    healthcheck:
+      test: ["CMD-SHELL", "ak healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  worker:
+    image: ghcr.io/goauthentik/server:2025.10.3
+    container_name: authentik-worker
+    restart: unless-stopped
+    command: worker
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/authentik.env
+    environment:
+      AUTHENTIK_REDIS__HOST: geek-redis
+      AUTHENTIK_POSTGRESQL__HOST: geek-postgres
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+    volumes:
+      - authentik-media:/media
+      - authentik-certs:/certs
+      - authentik-custom-templates:/templates
+    networks:
+      - geek-infra
+    healthcheck:
+      test: ["CMD-SHELL", "ak healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  outpost-proxy:
+    image: ghcr.io/goauthentik/proxy:2025.10.3
+    container_name: authentik-outpost
+    restart: unless-stopped
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/authentik.env
+    environment:
+      AUTHENTIK_HOST: http://authentik-server:9000
+      AUTHENTIK_INSECURE: "true"
+    networks:
+      - geek-infra
+    depends_on:
+      - server
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:9300/outpost.goauthentik.io/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  authentik-media:
+    name: geek-authentik-media
+  authentik-certs:
+    name: geek-authentik-certs
+  authentik-custom-templates:
+    name: geek-authentik-custom-templates
+
 networks:
   geek-infra:
     external: true

@@ -1,0 +1,28 @@
+name: geek
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: geek-postgres
+    restart: unless-stopped
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - geek-infra
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+    name: geek-postgres-data
+
+networks:
+  geek-infra:
+    external: true
+    name: geek-infra

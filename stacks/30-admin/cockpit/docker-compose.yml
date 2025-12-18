@@ -1,0 +1,35 @@
+name: geek
+
+services:
+  cockpit:
+    image: cockpit/ws:latest
+    container_name: geek-cockpit
+    restart: unless-stopped
+    env_file:
+      - /etc/homelab/secrets/global.env
+    privileged: true
+    volumes:
+      # Mount the host's root filesystem for system management
+      - /:/host
+      # Mount the Docker socket for container management
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Persistent configuration
+      - cockpit-config:/etc/cockpit
+    ports:
+      - "9090:9090"
+    networks:
+      - geek-infra
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  cockpit-config:
+    name: geek-cockpit-config
+
+networks:
+  geek-infra:
+    external: true
+    name: geek-infra

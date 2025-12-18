@@ -1,9 +1,37 @@
 name: geek
+
 services:
-  placeholder:
-    image: alpine:3.20
-    command: ["sh", "-c", "echo 'BookStack stack placeholder'; sleep 3600"]
-    networks: [geek-infra]
+  bookstack:
+    image: linuxserver/bookstack:25.11.20251109
+    container_name: geek-bookstack
+    restart: unless-stopped
+    env_file:
+      - /etc/homelab/secrets/global.env
+      - /etc/homelab/secrets/bookstack.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - DB_HOST=geek-postgres
+      - DB_PORT=5432
+      - DB_DATABASE=bookstack
+      - DB_USERNAME=bookstack
+      - DB_PASSWORD=${BOOKSTACK_DB_PASSWORD}
+      - APP_URL=${BOOKSTACK_APP_URL}
+    volumes:
+      - bookstack-config:/config
+    networks:
+      - geek-infra
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  bookstack-config:
+    name: geek-bookstack-config
+
 networks:
   geek-infra:
     external: true
