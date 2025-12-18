@@ -7,6 +7,14 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SOURCE="${REPO_ROOT}/stacks/00-edge/nginx/etc-nginx-docker"
 DEST="/etc/nginx-docker"
 
+
+if awk '!/^\s*#/' "${SOURCE}"/conf.d/*.conf | grep -q "host\.docker\.internal"; then
+  echo "ERR: host.docker.internal is not allowed (Linux). Use docker service names on geek-infra."
+  awk '!/^\s*#/' "${SOURCE}"/conf.d/*.conf | grep -n "host\.docker\.internal" || true
+  exit 1
+fi
+
+
 load_env_if_exists "/etc/homelab/secrets/global.env"
 load_env_if_exists "/etc/homelab/secrets/nginx.env"
 
