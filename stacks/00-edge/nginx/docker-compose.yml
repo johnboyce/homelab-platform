@@ -1,4 +1,4 @@
-name: geek
+name: edge-nginx
 
 services:
   nginx:

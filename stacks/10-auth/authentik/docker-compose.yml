@@ -1,4 +1,4 @@
-name: geek
+name: auth-authentik
 
 services:
   server:
