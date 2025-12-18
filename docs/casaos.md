@@ -41,14 +41,16 @@ CasaOS should be restricted to LAN access only. Ensure your firewall is configur
 If using UFW (Uncomplicated Firewall):
 
 ```bash
-# Allow CasaOS from local network only
-sudo ufw allow from 192.168.0.0/16 to any port 8888 proto tcp
-sudo ufw allow from 10.0.0.0/8 to any port 8888 proto tcp
-sudo ufw allow from 172.16.0.0/12 to any port 8888 proto tcp
+# Allow CasaOS from local network only (these specific rules take precedence)
+sudo ufw allow from 192.168.0.0/16 to any port 8888 proto tcp comment 'CasaOS LAN access'
+sudo ufw allow from 10.0.0.0/8 to any port 8888 proto tcp comment 'CasaOS LAN access'
+sudo ufw allow from 172.16.0.0/12 to any port 8888 proto tcp comment 'CasaOS LAN access'
 
-# Deny all other access to port 8888
-sudo ufw deny 8888/tcp
+# Verify rule order (specific allows should come before any general deny)
+sudo ufw status numbered
 ```
+
+Note: UFW processes rules in order. If you have a general deny-all rule, ensure the above allow rules come first. Use `sudo ufw insert <position>` to adjust rule order if needed.
 
 If using iptables directly:
 
@@ -107,7 +109,16 @@ You should receive the CasaOS web interface HTML response.
 ### Cannot Access CasaOS
 1. Verify CasaOS is running:
    ```bash
-   systemctl status casaos  # or check process as above
+   # Check for casaos related services (actual service name may vary)
+   systemctl list-units | grep -i casa
+   
+   # Common service names to try:
+   systemctl status casaos
+   systemctl status casaos-gateway
+   systemctl status casa-os
+   
+   # Or check the process directly
+   ps aux | grep casaos
    ```
 
 2. Check firewall rules:
