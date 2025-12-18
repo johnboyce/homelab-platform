@@ -13,7 +13,7 @@ The platform uses a single PostgreSQL 16 instance (`geek-postgres`) that hosts d
 
 PostgreSQL data is stored in a **Docker named volume** (`geek-postgres-data`), consistent with all other services in the platform. This approach provides:
 - **Portability**: Volumes are managed by Docker and work across different systems
-- **Consistency**: All platform services use named volumes (no bind mounts)
+- **Consistency**: All platform services use named volumes for data persistence
 - **Easier management**: Use standard Docker volume commands for backup, inspection, and migration
 
 To inspect the volume:
