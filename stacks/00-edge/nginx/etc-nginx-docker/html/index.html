@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEEK Home Platform</title>
+    <title>Johnny B Labs - Homelab Platform</title>
     <style>
         * {
             margin: 0;
@@ -13,29 +13,62 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* Irish landscape gradient: rolling green hills meeting misty sky */
+            background: linear-gradient(to bottom, 
+                #87CEEB 0%,      /* Sky blue */
+                #B0E0E6 20%,     /* Powder blue */
+                #98D8C8 40%,     /* Seafoam */
+                #6FBF73 60%,     /* Irish green */
+                #4A9D4F 80%,     /* Deep green */
+                #2E5C31 100%     /* Forest green */
+            );
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated clouds */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 30%;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 30%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 60%, rgba(255,255,255,0.25) 0%, transparent 50%);
+            animation: drift 60s linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translateX(0); }
+            to { transform: translateX(50%); }
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 800px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 25px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+            max-width: 900px;
             width: 100%;
-            padding: 50px;
+            padding: 60px;
             text-align: center;
-            animation: slideUp 0.6s ease-out;
+            animation: slideUp 0.8s ease-out;
+            position: relative;
+            z-index: 1;
+            border: 3px solid rgba(46, 125, 50, 0.2);
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -43,124 +76,228 @@
             }
         }
 
+        .logo {
+            font-size: 5em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         h1 {
-            font-size: 3em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #2E5C31 0%, #4A9D4F 50%, #169B62 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 20px;
-            font-weight: 700;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
-        .subtitle {
-            font-size: 1.3em;
+        .tagline {
+            font-size: 1.4em;
             color: #555;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #666;
             margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .status {
             display: inline-flex;
             align-items: center;
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 10px 20px;
-            border-radius: 25px;
-            margin-bottom: 40px;
-            font-weight: 500;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            color: #1b5e20;
+            padding: 12px 25px;
+            border-radius: 30px;
+            margin-bottom: 45px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
         }
 
         .status::before {
             content: "●";
             color: #4caf50;
             font-size: 1.5em;
-            margin-right: 10px;
+            margin-right: 12px;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scale(1.1);
+            }
         }
 
         .services {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 45px;
         }
 
         .service-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 30px 20px;
+            background: linear-gradient(135deg, #2E5C31 0%, #4A9D4F 100%);
+            border-radius: 18px;
+            padding: 35px 25px;
             text-decoration: none;
             color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(46, 92, 49, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
         }
 
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(46, 92, 49, 0.4);
         }
 
         .service-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
+            font-size: 3.5em;
+            margin-bottom: 18px;
             display: block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         .service-name {
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
         }
 
         .service-description {
-            font-size: 0.9em;
-            opacity: 0.9;
+            font-size: 0.95em;
+            opacity: 0.95;
+            line-height: 1.5;
         }
 
         .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 2px solid #eee;
-            color: #888;
-            font-size: 0.9em;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(46, 125, 50, 0.2);
+            color: #777;
+            font-size: 0.95em;
+        }
+
+        .footer-shamrock {
+            color: #4A9D4F;
+            font-size: 1.2em;
+            margin: 0 5px;
         }
 
         /* Responsive design */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
-                padding: 30px 20px;
+                padding: 40px 25px;
             }
 
             h1 {
-                font-size: 2em;
+                font-size: 2.5em;
             }
 
-            .subtitle {
-                font-size: 1.1em;
+            .logo {
+                font-size: 3.5em;
+            }
+
+            .tagline {
+                font-size: 1.2em;
+            }
+
+            .description {
+                font-size: 1em;
             }
 
             .services {
                 grid-template-columns: 1fr;
             }
         }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .logo {
+                font-size: 3em;
+            }
+
+            .service-card {
+                padding: 25px 20px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🏠 GEEK Home Platform</h1>
-        <p class="subtitle">Welcome to your personal homelab infrastructure</p>
+        <div class="logo">🍀</div>
+        <h1>Johnny B Labs</h1>
+        <p class="tagline">"Where Innovation Meets the Emerald Isle"</p>
+        <p class="description">
+            Welcome to the digital workshop of Johnny B, a master software craftsman 
+            blending cutting-edge technology with the timeless beauty of Ireland. 
+            From cloud infrastructure to elegant code, every solution is built with 
+            precision, passion, and a touch of Irish ingenuity.
+        </p>
         
         <div class="status">
-            System Online
+            All Systems Operational
+        </div>
+
+        <div class="services">
+            <a href="https://bookstack.johnnyblabs.com" class="service-card">
+                <span class="service-icon">📚</span>
+                <div class="service-name">BookStack</div>
+                <div class="service-description">Knowledge Base & Documentation</div>
+            </a>
+
+            <a href="https://auth.johnnyblabs.com" class="service-card">
+                <span class="service-icon">🔐</span>
+                <div class="service-name">Authentication</div>
+                <div class="service-description">Secure Identity Management</div>
+            </a>
         </div>
 
         <div class="footer">
-            <p>Powered by Nginx • Docker • GEEK Infrastructure</p>
+            <p>Crafted with excellence <span class="footer-shamrock">☘️</span> by Johnny B</p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                Powered by Nginx • Docker • Irish Engineering
+            </p>
         </div>
     </div>
 </body>
