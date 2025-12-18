@@ -13,6 +13,9 @@ services:
       - /etc/nginx-docker/conf.d:/etc/nginx/conf.d:ro
       - /etc/nginx-docker/snippets:/etc/nginx/snippets:ro
       - /etc/nginx-docker/certs:/etc/nginx/certs:ro
+      - /etc/nginx-docker/html:/etc/nginx/html:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - geek-infra
 
