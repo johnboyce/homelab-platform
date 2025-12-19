@@ -78,3 +78,6 @@ down:
 logs:
 	@if [ -z "$(STACK)" ]; then echo "Usage: make logs STACK=<stack-path>"; exit 1; fi
 	docker compose -f "$(STACK)/docker-compose.yml" logs -f --tail=200
+
+
+

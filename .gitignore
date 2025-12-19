@@ -29,3 +29,6 @@ backups/**
 
 # Logs
 *.log
+
+# Reports
+**/reports/**
