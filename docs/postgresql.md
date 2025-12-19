@@ -11,15 +11,51 @@ The platform uses a single PostgreSQL 16 instance (`geek-postgres`) that hosts d
 
 ## Data Storage
 
-PostgreSQL data is stored in a **Docker named volume** (`geek-postgres-data`), consistent with all other services in the platform. This approach provides:
-- **Portability**: Volumes are managed by Docker and work across different systems
-- **Consistency**: All platform services use named volumes for data persistence
-- **Easier management**: Use standard Docker volume commands for backup, inspection, and migration
+PostgreSQL data is stored in a **bind mount** at `/srv/homelab/postgres/pgdata` on the host filesystem. This provides:
+- **Explicit control**: Data location is clear and accessible on the host
+- **Compatibility**: Works with existing data migrations from previous setups
+- **Direct access**: Can browse and backup data directly from the host filesystem
 
-To inspect the volume:
+The data directory location:
 ```bash
-docker volume inspect geek-postgres-data
+# Host path
+/srv/homelab/postgres/pgdata
+
+# Container mount
+/var/lib/postgresql/data
 ```
+
+### Optional: Migrating to a Named Volume
+
+If you prefer to use a Docker-managed named volume instead of a bind mount, you can migrate your data:
+
+1. **Backup your data first:**
+   ```bash
+   docker exec geek-postgres pg_dumpall -U postgres > /tmp/postgres_backup.sql
+   ```
+
+2. **Stop PostgreSQL:**
+   ```bash
+   docker compose -f stacks/05-infra/postgres/docker-compose.yml down
+   ```
+
+3. **Update docker-compose.yml to use a named volume:**
+   ```yaml
+   volumes:
+     - postgres-data:/var/lib/postgresql/data
+   
+   volumes:
+     postgres-data:
+       name: geek-postgres-data
+   ```
+
+4. **Start with new volume and restore:**
+   ```bash
+   docker compose -f stacks/05-infra/postgres/docker-compose.yml up -d
+   docker exec -i geek-postgres psql -U postgres < /tmp/postgres_backup.sql
+   ```
+
+**Note:** Only migrate if you have a specific need. The current bind mount approach works well for most use cases.
 
 ## Accessing PostgreSQL
 

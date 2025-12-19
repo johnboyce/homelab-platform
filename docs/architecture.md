@@ -16,30 +16,30 @@ The platform is composed of independent **stacks**, deployed in a controlled ord
 
 ## Data Persistence Strategy
 
-All platform services use **Docker named volumes** for data persistence, following these principles:
+The platform supports both Docker named volumes and bind mounts for data persistence:
 
-**Named Volumes (Standard)**:
-- All services use Docker-managed named volumes for persistent data
-- Naming convention: `geek-{service}-{purpose}` (e.g., `geek-postgres-data`, `geek-redis-data`)
+**Named Volumes (Preferred for new services)**:
+- Docker-managed named volumes for persistent data
+- Naming convention: `geek-{service}-{purpose}` (e.g., `geek-redis-data`, `geek-authentik-media`)
 - Benefits: Portable, consistent, easy to manage with Docker commands
 - Managed by Docker: `docker volume ls`, `docker volume inspect`, etc.
+
+**Bind Mounts (Acceptable for existing data)**:
+- Direct host path mounts (e.g., `/srv/homelab/postgres/pgdata`)
+- Use when migrating existing services with data in specific locations
+- Provides explicit control over data location on the host filesystem
+- PostgreSQL uses `/srv/homelab/postgres/pgdata` for its data directory
 
 **Configuration Files**:
 - Nginx uses bind mounts for configuration files (`/etc/nginx-docker/*`)
 - These are read-only (`:ro`) mounts for host-managed configuration
-- This is a special case for the edge proxy and acceptable
-
-**No Bind Mounts for Data**:
-- Bind mounts (e.g., `/srv/homelab/...`) are NOT used for persistent application data
-- Maintains consistency and portability across different host systems
-- Avoids hardcoded paths and permission issues
 
 **Examples**:
-- PostgreSQL: `geek-postgres-data`
-- Redis: `geek-redis-data`
-- Authentik: `geek-authentik-media`, `geek-authentik-certs`
-- Bookstack: `geek-bookstack-config`
-- Pi-hole: `geek-pihole-etc`, `geek-pihole-dnsmasq`
+- PostgreSQL: `/srv/homelab/postgres/pgdata` (bind mount - existing data)
+- Redis: `geek-redis-data` (named volume)
+- Authentik: `geek-authentik-media`, `geek-authentik-certs` (named volumes)
+- Bookstack: `geek-bookstack-config` (named volume)
+- Pi-hole: `geek-pihole-etc`, `geek-pihole-dnsmasq` (named volumes)
 
 See individual service documentation for volume management details.
 
