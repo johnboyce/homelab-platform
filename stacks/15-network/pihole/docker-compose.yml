@@ -1,44 +1,20 @@
-name: geek
-
 services:
   pihole:
     image: pihole/pihole:latest
     container_name: geek-pihole
+    hostname: pihole
     restart: unless-stopped
+
     env_file:
       - /etc/homelab/secrets/global.env
       - /etc/homelab/secrets/pihole.env
-    environment:
-      - TZ=America/New_York
-      - WEBPASSWORD=${PIHOLE_WEB_PASSWORD}
-      - FTLCONF_LOCAL_IPV4=${PIHOLE_HOST_IP}
-      - PIHOLE_DNS_=8.8.8.8;8.8.4.4
-    volumes:
-      - pihole-etc:/etc/pihole
-      - pihole-dnsmasq:/etc/dnsmasq.d
+
+    # Publish ONLY DNS (tcp+udp). No web ports.
     ports:
-      # DNS ports
       - "53:53/tcp"
       - "53:53/udp"
-      # DHCP ports (optional, uncomment if using DHCP)
-      # - "67:67/udp"
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - geek-infra
-    healthcheck:
-      test: ["CMD", "dig", "+short", "+norecurse", "+retry=0", "@127.0.0.1", "pi.hole"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
-volumes:
-  pihole-etc:
-    name: geek-pihole-etc
-  pihole-dnsmasq:
-    name: geek-pihole-dnsmasq
+    volumes:
+      - /srv/homelab/pihole/etc-pihole:/etc/pihole
+      - /srv/homelab/pihole/etc-dnsmasq.d:/etc/dnsmasq.d
 
-networks:
-  geek-infra:
-    external: true
-    name: geek-infra
