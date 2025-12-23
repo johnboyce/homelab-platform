@@ -14,6 +14,35 @@ The platform is composed of independent **stacks**, deployed in a controlled ord
 - Repo: desired state (compose + reference configs + docs)
 - Host: runtime state (secrets, certs, persistent data)
 
+## Data Persistence Strategy
+
+The platform supports both Docker named volumes and bind mounts for data persistence:
+
+**Named Volumes (Preferred for new services)**:
+- Docker-managed named volumes for persistent data
+- Naming convention: `geek-{service}-{purpose}` (e.g., `geek-redis-data`, `geek-authentik-media`)
+- Benefits: Portable, consistent, easy to manage with Docker commands
+- Managed by Docker: `docker volume ls`, `docker volume inspect`, etc.
+
+**Bind Mounts (Acceptable for existing data)**:
+- Direct host path mounts (e.g., `/srv/homelab/postgres/pgdata`)
+- Use when migrating existing services with data in specific locations
+- Provides explicit control over data location on the host filesystem
+- PostgreSQL uses `/srv/homelab/postgres/pgdata` for its data directory
+
+**Configuration Files**:
+- Nginx uses bind mounts for configuration files (`/etc/nginx-docker/*`)
+- These are read-only (`:ro`) mounts for host-managed configuration
+
+**Examples**:
+- PostgreSQL: `/srv/homelab/postgres/pgdata` (bind mount - existing data)
+- Redis: `geek-redis-data` (named volume)
+- Authentik: `geek-authentik-media`, `geek-authentik-certs` (named volumes)
+- Bookstack: `geek-bookstack-config` (named volume)
+- Pi-hole: `geek-pihole-etc`, `geek-pihole-dnsmasq` (named volumes)
+
+See individual service documentation for volume management details.
+
 ## Goals
 - Reproducibility: a new operator can deploy from scratch by following docs + scripts.
 - Safety: no secrets in git; deterministic deploy/rollback/backup.

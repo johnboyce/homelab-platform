@@ -9,6 +9,54 @@ The platform uses a single PostgreSQL 16 instance (`geek-postgres`) that hosts d
 - **bookstack**: Wiki/documentation database
 - (Future services can also use this shared instance)
 
+## Data Storage
+
+PostgreSQL data is stored in a **bind mount** at `/srv/homelab/postgres/pgdata` on the host filesystem. This provides:
+- **Explicit control**: Data location is clear and accessible on the host
+- **Compatibility**: Works with existing data migrations from previous setups
+- **Direct access**: Can browse and backup data directly from the host filesystem
+
+The data directory location:
+```bash
+# Host path
+/srv/homelab/postgres/pgdata
+
+# Container mount
+/var/lib/postgresql/data
+```
+
+### Optional: Migrating to a Named Volume
+
+If you prefer to use a Docker-managed named volume instead of a bind mount, you can migrate your data:
+
+1. **Backup your data first:**
+   ```bash
+   docker exec geek-postgres pg_dumpall -U postgres > /tmp/postgres_backup.sql
+   ```
+
+2. **Stop PostgreSQL:**
+   ```bash
+   docker compose -f stacks/05-infra/postgres/docker-compose.yml down
+   ```
+
+3. **Update docker-compose.yml to use a named volume:**
+   ```yaml
+   volumes:
+     - postgres-data:/var/lib/postgresql/data
+   
+   volumes:
+     postgres-data:
+       name: geek-postgres-data
+   ```
+
+4. **Start with new volume and restore:**
+   ```bash
+   docker compose -f stacks/05-infra/postgres/docker-compose.yml up -d
+   docker exec -i geek-postgres psql -U postgres < /tmp/postgres_backup.sql
+   ```
+
+**Note:** Only migrate if you have a specific need. The current bind mount approach works well for most use cases.
+
 ## Accessing PostgreSQL
 
 ### Using psql in the container
